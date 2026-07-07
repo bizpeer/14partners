@@ -80,6 +80,19 @@ export interface CareerItem {
   createdAt?: string;
 }
 
+export interface LeaderItem {
+  id?: string;
+  name_ko: string;
+  name_en: string;
+  title_ko: string;
+  title_en: string;
+  bio_ko: string;
+  bio_en: string;
+  image: string;
+  order: number;
+  createdAt?: string;
+}
+
 // --- DEFAULT DATA FOR SEEDING / FALLBACKS ---
 export const defaultMetrics: MetricItem[] = [
   { id: "aum", label_ko: "운용자산 (AUM)", label_en: "Assets Under Management", value: 3.8, suffix_ko: "T KRW+", suffix_en: "T KRW+" },
@@ -201,6 +214,39 @@ export const defaultCareers: CareerItem[] = [
   }
 ];
 
+export const defaultLeaders: LeaderItem[] = [
+  {
+    name_ko: "서해석",
+    name_en: "Hae-seok Seo",
+    title_ko: "대표 파트너 / CEO",
+    title_en: "Managing Partner & CEO",
+    bio_ko: "前 글로벌 사모펀드 한국 대표 및 대형 IB 부문장 역임. 20년 이상의 아시아 및 한국 시장 투자 경력 보유.",
+    bio_en: "Former Head of Korea at Global PEF & Corporate Finance division leader. Over 20 years of investment track record in Asia and Korea.",
+    image: "HS",
+    order: 1
+  },
+  {
+    name_ko: "김경준",
+    name_en: "Kyung-jun Kim",
+    title_ko: "파트너 / COO",
+    title_en: "Partner & COO",
+    bio_ko: "구조화 신용 및 메자닌 투자 스페셜리스트. 다양한 기업 자산 재조정 및 인수금융 설계 주도.",
+    bio_en: "Specialist in structured credit and mezzanine investments. Led numerous corporate restructurings and acquisition financing structures.",
+    image: "KJ",
+    order: 2
+  },
+  {
+    name_ko: "성재원",
+    name_en: "Jae-won Seong",
+    title_ko: "투자 부문 매니저",
+    title_en: "Manager, Investment Division",
+    bio_ko: "국내외 M&A 자문 및 구조화 파이낸싱 분석가. 다수의 신설 펀드 세팅 및 백오피스 운영 경험 보유.",
+    bio_en: "Analyst in domestic and cross-border M&A advisory. Extensive experience in new fund setups and back-office operations.",
+    image: "JW",
+    order: 3
+  }
+];
+
 // Checking if Firestore configuration exists helper
 const hasFirebaseKey = () => typeof window !== "undefined" && !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
@@ -228,6 +274,11 @@ export async function seedInitialData() {
     for (const career of defaultCareers) {
       const docRef = doc(collection(db, "careers"));
       await setDoc(docRef, { ...career, id: docRef.id });
+    }
+    // 5. Seed leaders
+    for (const leader of defaultLeaders) {
+      const docRef = doc(collection(db, "leaders"));
+      await setDoc(docRef, { ...leader, id: docRef.id });
     }
     return true;
   } catch (error) {
@@ -477,6 +528,62 @@ export async function deleteCareerItem(id: string): Promise<boolean> {
     return true;
   } catch (e) {
     console.error("Error deleting career item:", e);
+    return false;
+  }
+}
+
+// 7. Leaders API
+export async function getLeaders(): Promise<LeaderItem[]> {
+  if (!hasFirebaseKey()) return defaultLeaders;
+  try {
+    const querySnapshot = await getDocs(collection(db, "leaders"));
+    if (querySnapshot.empty) {
+      return defaultLeaders;
+    }
+    const items: LeaderItem[] = [];
+    querySnapshot.forEach((doc) => {
+      items.push({ ...doc.data(), id: doc.id } as LeaderItem);
+    });
+    return items.sort((a, b) => (a.order || 0) - (b.order || 0));
+  } catch (e) {
+    console.error("Error fetching leaders from firestore:", e);
+    return defaultLeaders;
+  }
+}
+
+export async function addLeaderItem(item: Omit<LeaderItem, "id">): Promise<string | null> {
+  if (!hasFirebaseKey()) return null;
+  try {
+    const docRef = await addDoc(collection(db, "leaders"), {
+      ...item,
+      createdAt: new Date().toISOString()
+    });
+    await updateDoc(docRef, { id: docRef.id });
+    return docRef.id;
+  } catch (e) {
+    console.error("Error adding leader item:", e);
+    return null;
+  }
+}
+
+export async function updateLeaderItem(id: string, item: Partial<LeaderItem>): Promise<boolean> {
+  if (!hasFirebaseKey()) return false;
+  try {
+    await updateDoc(doc(db, "leaders", id), item);
+    return true;
+  } catch (e) {
+    console.error("Error updating leader item:", e);
+    return false;
+  }
+}
+
+export async function deleteLeaderItem(id: string): Promise<boolean> {
+  if (!hasFirebaseKey()) return false;
+  try {
+    await deleteDoc(doc(db, "leaders", id));
+    return true;
+  } catch (e) {
+    console.error("Error deleting leader item:", e);
     return false;
   }
 }

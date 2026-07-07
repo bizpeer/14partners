@@ -4,46 +4,30 @@ import React, { useEffect, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { motion } from "framer-motion";
 import { Shield, Network, Landmark } from "lucide-react";
+import { getLeaders, LeaderItem } from "@/lib/contentService";
 
 export default function About() {
   const { language, t } = useLanguage();
   const [mounted, setMounted] = useState(false);
+  const [leaders, setLeaders] = useState<LeaderItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    async function loadLeaders() {
+      try {
+        const data = await getLeaders();
+        setLeaders(data);
+      } catch (error) {
+        console.error("Failed to load leaders:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadLeaders();
   }, []);
 
   if (!mounted) return null;
-
-  const leaders = [
-    {
-      name: language === "en" ? "Jun-seo Kim" : "김준서",
-      title: language === "en" ? "Managing Partner & CEO" : "대표 파트너 / CEO",
-      bio:
-        language === "en"
-          ? "Former Head of Korea at Global PEF & Corporate Finance division leader. Over 20 years of investment track record in Asia and Korea."
-          : "前 글로벌 사모펀드 한국 대표 및 대형 IB 부문장 역임. 20년 이상의 아시아 및 한국 시장 투자 경력 보유.",
-      image: "JS",
-    },
-    {
-      name: language === "en" ? "Hyun-woo Lee" : "이현우",
-      title: language === "en" ? "Partner, Investment Division" : "투자 부문 파트너",
-      bio:
-        language === "en"
-          ? "Specialist in structured credit and mezzanine investments. Led numerous corporate restructurings and acquisition financing structures."
-          : "구조화 신용 및 메자닌 투자 스페셜리스트. 다양한 기업 자산 재조정 및 인수금융 설계 주도.",
-      image: "HW",
-    },
-    {
-      name: language === "en" ? "Sarah Park" : "Sarah Park",
-      title: language === "en" ? "Partner, Cross-Border Advisory" : "크로스보더 자문 부문 파트너",
-      bio:
-        language === "en"
-          ? "Expert in US-Asia M&A advisory. Led multiple cross-border transactions and foreign capital attractions."
-          : "미국 및 아시아 지역 M&A 자문 전문가. 다수의 해외 자본 유치 및 크로스보더 딜 성사 경험.",
-      image: "SP",
-    },
-  ];
 
   const sections = [
     {
@@ -154,34 +138,40 @@ export default function About() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {leaders.map((leader, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white border border-black/5 p-8 rounded flex flex-col justify-between group hover:border-accent-gold transition-colors duration-300"
-              >
-                <div className="space-y-6">
-                  {/* Mock Image Placeholder with Initials */}
-                  <div className="w-20 h-20 rounded-full bg-navy-deep text-accent-gold flex items-center justify-center font-extrabold text-2xl group-hover:scale-105 transition-transform duration-300">
-                    {leader.image}
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-navy-deep">
-                      {leader.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-accent-gold">
-                      {leader.title}
+            {loading ? (
+              <div className="col-span-full py-12 flex justify-center items-center">
+                <div className="w-6 h-6 border-2 border-accent-gold border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : (
+              leaders.map((leader, index) => (
+                <motion.div
+                  key={leader.id || index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="bg-white border border-black/5 p-8 rounded flex flex-col justify-between group hover:border-accent-gold transition-colors duration-300"
+                >
+                  <div className="space-y-6">
+                    {/* Mock Image Placeholder with Initials */}
+                    <div className="w-20 h-20 rounded-full bg-navy-deep text-accent-gold flex items-center justify-center font-extrabold text-2xl group-hover:scale-105 transition-transform duration-300">
+                      {leader.image}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-xl font-bold text-navy-deep">
+                        {language === "en" ? leader.name_en : leader.name_ko}
+                      </h3>
+                      <p className="text-xs font-semibold text-accent-gold">
+                        {language === "en" ? leader.title_en : leader.title_ko}
+                      </p>
+                    </div>
+                    <p className="text-xs text-navy-deep/70 leading-relaxed font-light">
+                      {language === "en" ? leader.bio_en : leader.bio_ko}
                     </p>
                   </div>
-                  <p className="text-xs text-navy-deep/70 leading-relaxed font-light">
-                    {leader.bio}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            )}
           </div>
         </div>
       </div>

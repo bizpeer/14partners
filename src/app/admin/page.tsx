@@ -20,11 +20,16 @@ import {
   addCareerItem,
   updateCareerItem,
   deleteCareerItem,
+  getLeaders,
+  addLeaderItem,
+  updateLeaderItem,
+  deleteLeaderItem,
   PortfolioItem,
   NewsItem,
   MetricItem,
   InquiryItem,
-  CareerItem
+  CareerItem,
+  LeaderItem
 } from "@/lib/contentService";
 import {
   Lock,
@@ -44,14 +49,15 @@ import {
   Sparkles,
   Download,
   AlertTriangle,
-  Briefcase
+  Briefcase,
+  Award
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"portfolio" | "news" | "metrics" | "inquiries" | "careers" | "settings">("portfolio");
+  const [activeTab, setActiveTab] = useState<"portfolio" | "news" | "metrics" | "inquiries" | "careers" | "leaders" | "settings">("portfolio");
 
   // Credentials for inline login check
   const [email, setEmail] = useState("");
@@ -68,6 +74,21 @@ export default function AdminDashboard() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [inquiries, setInquiries] = useState<InquiryItem[]>([]);
   const [careers, setCareers] = useState<CareerItem[]>([]);
+  const [leaders, setLeaders] = useState<LeaderItem[]>([]);
+
+  // Leaders edit/add modal states
+  const [editingLeader, setEditingLeader] = useState<LeaderItem | null>(null);
+  const [isAddingLeader, setIsAddingLeader] = useState(false);
+  const [leaderForm, setLeaderForm] = useState<Omit<LeaderItem, "id">>({
+    name_ko: "",
+    name_en: "",
+    title_ko: "",
+    title_en: "",
+    bio_ko: "",
+    bio_en: "",
+    image: "",
+    order: 1
+  });
 
   // Careers edit/add modal states
   const [editingCareer, setEditingCareer] = useState<CareerItem | null>(null);
@@ -130,18 +151,20 @@ export default function AdminDashboard() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [metricsData, portfolioData, newsData, inquiriesData, careersData] = await Promise.all([
+      const [metricsData, portfolioData, newsData, inquiriesData, careersData, leadersData] = await Promise.all([
         getMetrics(),
         getPortfolioItems(),
         getNewsItems(),
         getInquiries(),
-        getCareers()
+        getCareers(),
+        getLeaders()
       ]);
       setMetrics(metricsData);
       setPortfolio(portfolioData);
       setNews(newsData);
       setInquiries(inquiriesData);
       setCareers(careersData);
+      setLeaders(leadersData);
     } catch (e) {
       console.error("Error loading admin data:", e);
       showFeedback("데이터를 불러오는데 오류가 발생했습니다.", "error");
@@ -357,6 +380,58 @@ export default function AdminDashboard() {
     }
   };
 
+  // --- Actions: Leaders ---
+  const handleLeaderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingLeader && editingLeader.id) {
+      const success = await updateLeaderItem(editingLeader.id, leaderForm);
+      if (success) {
+        showFeedback("경영진 정보가 성공적으로 수정되었습니다.", "success");
+        setEditingLeader(null);
+        setIsAddingLeader(false);
+        loadAllData();
+      } else {
+        showFeedback("경영진 정보 수정 실패", "error");
+      }
+    } else {
+      const newId = await addLeaderItem(leaderForm);
+      if (newId) {
+        showFeedback("경영진이 신규 등록되었습니다.", "success");
+        setIsAddingLeader(false);
+        loadAllData();
+      } else {
+        showFeedback("경영진 등록 실패", "error");
+      }
+    }
+  };
+
+  const handleEditLeader = (item: LeaderItem) => {
+    setEditingLeader(item);
+    setLeaderForm({
+      name_ko: item.name_ko,
+      name_en: item.name_en,
+      title_ko: item.title_ko,
+      title_en: item.title_en,
+      bio_ko: item.bio_ko,
+      bio_en: item.bio_en,
+      image: item.image,
+      order: item.order
+    });
+    setIsAddingLeader(true);
+  };
+
+  const handleDeleteLeader = async (id: string) => {
+    if (confirm("정말로 이 경영진을 삭제하시겠습니까?")) {
+      const success = await deleteLeaderItem(id);
+      if (success) {
+        showFeedback("경영진이 삭제되었습니다.", "success");
+        loadAllData();
+      } else {
+        showFeedback("경영진 삭제 실패", "error");
+      }
+    }
+  };
+
   // --- Actions: Seeding DB ---
   const handleSeedDatabase = async () => {
     if (confirm("Firebase Firestore를 데모용 정적 데이터로 초기 세팅하시겠습니까? 기존 데이터가 덮어씌워지거나 중복될 수 있습니다.")) {
@@ -519,6 +594,18 @@ export default function AdminDashboard() {
             >
               <Briefcase className="w-4 h-4" />
               채용공고 관리
+            </button>
+
+            <button
+              onClick={() => setActiveTab("leaders")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold transition-all duration-200 cursor-pointer ${
+                activeTab === "leaders"
+                  ? "bg-accent-gold text-navy-deep shadow-lg shadow-accent-gold/10"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Award className="w-4 h-4" />
+              경영진 관리
             </button>
 
             <button
@@ -1450,6 +1537,211 @@ export default function AdminDashboard() {
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* TABS: LEADERS */}
+            {activeTab === "leaders" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-extrabold tracking-wide">경영진 관리</h2>
+                    <p className="text-xs text-white/50">About 페이지 하단에 노출되는 경영진(Leadership) 목록을 CRUD 관리합니다.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditingLeader(null);
+                      setLeaderForm({
+                        name_ko: "",
+                        name_en: "",
+                        title_ko: "",
+                        title_en: "",
+                        bio_ko: "",
+                        bio_en: "",
+                        image: "",
+                        order: leaders.length + 1
+                      });
+                      setIsAddingLeader(true);
+                    }}
+                    className="bg-accent-gold text-navy-deep px-4 py-2.5 rounded text-xs font-bold hover:bg-accent-gold-dark transition-all flex items-center gap-1.5 cursor-pointer shadow-lg shadow-accent-gold/10"
+                  >
+                    <Plus className="w-4 h-4" /> 경영진 추가
+                  </button>
+                </div>
+
+                {isAddingLeader ? (
+                  <form onSubmit={handleLeaderSubmit} className="bg-navy-light/40 border border-white/10 p-6 rounded-lg space-y-6">
+                    <h3 className="text-sm font-bold border-b border-white/10 pb-2 text-accent-gold">
+                      {editingLeader ? "경영진 수정" : "신규 경영진 등록"}
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">이름 (국문)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. 서해석"
+                          value={leaderForm.name_ko}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, name_ko: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">이름 (영문)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Hae-seok Seo"
+                          value={leaderForm.name_en}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, name_en: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">이미지 이니셜 (2자)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. HS"
+                          value={leaderForm.image}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, image: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">출력 순서</label>
+                        <input
+                          type="number"
+                          required
+                          min={1}
+                          value={leaderForm.order}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, order: parseInt(e.target.value) || 1 })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none font-bold"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">직함 (국문)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. 대표 파트너 / CEO"
+                          value={leaderForm.title_ko}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, title_ko: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">직함 (영문)</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. Managing Partner & CEO"
+                          value={leaderForm.title_en}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, title_en: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">소개글 (국문)</label>
+                        <textarea
+                          required
+                          rows={3}
+                          placeholder="국문 바이오 소개 문구를 입력하십시오."
+                          value={leaderForm.bio_ko}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, bio_ko: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none resize-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">소개글 (영문)</label>
+                        <textarea
+                          required
+                          rows={3}
+                          placeholder="영문 바이오 소개 문구를 입력하십시오."
+                          value={leaderForm.bio_en}
+                          onChange={(e) => setLeaderForm({ ...leaderForm, bio_en: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingLeader(false)}
+                        className="px-4 py-2 border border-white/20 rounded text-xs text-white/60 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-accent-gold text-navy-deep rounded text-xs font-bold hover:bg-accent-gold-dark transition-all cursor-pointer"
+                      >
+                        {editingLeader ? "저장하기" : "등록하기"}
+                      </button>
+                    </div>
+                  </form>
+                ) : null}
+
+                {/* Leaders list table */}
+                <div className="bg-navy-light/10 border border-white/10 rounded-lg overflow-hidden">
+                  <table className="w-full border-collapse text-left text-xs">
+                    <thead>
+                      <tr className="bg-white/5 border-b border-white/10 text-[10px] uppercase font-bold tracking-wider text-white/50">
+                        <th className="p-4 w-16">순서</th>
+                        <th className="p-4 w-20">로고</th>
+                        <th className="p-4">이름 (국문/영문)</th>
+                        <th className="p-4">직함 (국문/영문)</th>
+                        <th className="p-4">소개 (국문)</th>
+                        <th className="p-4 text-right">관리</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {leaders.map((item) => (
+                        <tr key={item.id} className="hover:bg-white/5 transition-colors">
+                          <td className="p-4 font-mono font-bold text-accent-gold">{item.order}</td>
+                          <td className="p-4">
+                            <div className="w-8 h-8 rounded-full bg-navy-deep text-accent-gold border border-accent-gold/20 flex items-center justify-center font-bold text-xs">
+                              {item.image}
+                            </div>
+                          </td>
+                          <td className="p-4 space-y-0.5">
+                            <div className="font-bold text-white text-sm">{item.name_ko}</div>
+                            <div className="text-white/40">{item.name_en}</div>
+                          </td>
+                          <td className="p-4 space-y-0.5">
+                            <div className="font-semibold text-white">{item.title_ko}</div>
+                            <div className="text-white/40">{item.title_en}</div>
+                          </td>
+                          <td className="p-4 text-white/60 font-light max-w-xs truncate">{item.bio_ko}</td>
+                          <td className="p-4 text-right">
+                            <div className="flex justify-end items-center gap-1.5">
+                              <button
+                                onClick={() => handleEditLeader(item)}
+                                className="p-1.5 text-white/40 hover:text-accent-gold transition-colors cursor-pointer"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => item.id && handleDeleteLeader(item.id)}
+                                className="p-1.5 text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
