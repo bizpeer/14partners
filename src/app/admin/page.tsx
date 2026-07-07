@@ -16,10 +16,15 @@ import {
   getInquiries,
   deleteInquiry,
   seedInitialData,
+  getCareers,
+  addCareerItem,
+  updateCareerItem,
+  deleteCareerItem,
   PortfolioItem,
   NewsItem,
   MetricItem,
-  InquiryItem
+  InquiryItem,
+  CareerItem
 } from "@/lib/contentService";
 import {
   Lock,
@@ -38,14 +43,15 @@ import {
   Calendar,
   Sparkles,
   Download,
-  AlertTriangle
+  AlertTriangle,
+  Briefcase
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<"portfolio" | "news" | "metrics" | "inquiries" | "settings">("portfolio");
+  const [activeTab, setActiveTab] = useState<"portfolio" | "news" | "metrics" | "inquiries" | "careers" | "settings">("portfolio");
 
   // Credentials for inline login check
   const [email, setEmail] = useState("");
@@ -61,6 +67,24 @@ export default function AdminDashboard() {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [inquiries, setInquiries] = useState<InquiryItem[]>([]);
+  const [careers, setCareers] = useState<CareerItem[]>([]);
+
+  // Careers edit/add modal states
+  const [editingCareer, setEditingCareer] = useState<CareerItem | null>(null);
+  const [isAddingCareer, setIsAddingCareer] = useState(false);
+  const [careerForm, setCareerForm] = useState<Omit<CareerItem, "id">>({
+    title: "",
+    postedDate: "",
+    status: "active",
+    description: "",
+    requirements: "",
+    preferred: "",
+    conditions: "",
+    process: "",
+    submission: "",
+    notes: "",
+    contactEmail: ""
+  });
 
   // Edit/Add modal states
   const [editingPortfolio, setEditingPortfolio] = useState<PortfolioItem | null>(null);
@@ -106,16 +130,18 @@ export default function AdminDashboard() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [metricsData, portfolioData, newsData, inquiriesData] = await Promise.all([
+      const [metricsData, portfolioData, newsData, inquiriesData, careersData] = await Promise.all([
         getMetrics(),
         getPortfolioItems(),
         getNewsItems(),
-        getInquiries()
+        getInquiries(),
+        getCareers()
       ]);
       setMetrics(metricsData);
       setPortfolio(portfolioData);
       setNews(newsData);
       setInquiries(inquiriesData);
+      setCareers(careersData);
     } catch (e) {
       console.error("Error loading admin data:", e);
       showFeedback("데이터를 불러오는데 오류가 발생했습니다.", "error");
@@ -276,6 +302,61 @@ export default function AdminDashboard() {
     }
   };
 
+  // --- Actions: Careers ---
+  const handleCareerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingCareer && editingCareer.id) {
+      const success = await updateCareerItem(editingCareer.id, careerForm);
+      if (success) {
+        showFeedback("채용공고가 성공적으로 수정되었습니다.", "success");
+        setEditingCareer(null);
+        setIsAddingCareer(false);
+        loadAllData();
+      } else {
+        showFeedback("채용공고 수정 실패", "error");
+      }
+    } else {
+      const newId = await addCareerItem(careerForm);
+      if (newId) {
+        showFeedback("채용공고가 신규 등록되었습니다.", "success");
+        setIsAddingCareer(false);
+        loadAllData();
+      } else {
+        showFeedback("채용공고 등록 실패", "error");
+      }
+    }
+  };
+
+  const handleEditCareer = (item: CareerItem) => {
+    setEditingCareer(item);
+    setCareerForm({
+      title: item.title,
+      postedDate: item.postedDate,
+      status: item.status,
+      description: item.description,
+      requirements: item.requirements,
+      preferred: item.preferred,
+      conditions: item.conditions,
+      process: item.process,
+      submission: item.submission,
+      notes: item.notes,
+      contactEmail: item.contactEmail
+    });
+    setIsAddingCareer(true);
+  };
+
+  const handleDeleteCareer = async (id: string) => {
+    if (confirm("정말로 이 채용공고를 삭제하시겠습니까?")) {
+      const success = await deleteCareerItem(id);
+      if (success) {
+        showFeedback("채용공고가 삭제되었습니다.", "success");
+        loadAllData();
+      } else {
+        showFeedback("채용공고 삭제 실패", "error");
+      }
+    }
+  };
+
   // --- Actions: Seeding DB ---
   const handleSeedDatabase = async () => {
     if (confirm("Firebase Firestore를 데모용 정적 데이터로 초기 세팅하시겠습니까? 기존 데이터가 덮어씌워지거나 중복될 수 있습니다.")) {
@@ -426,6 +507,18 @@ export default function AdminDashboard() {
             >
               <Inbox className="w-4 h-4" />
               고객 접수 내역
+            </button>
+
+            <button
+              onClick={() => setActiveTab("careers")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded text-xs font-bold transition-all duration-200 cursor-pointer ${
+                activeTab === "careers"
+                  ? "bg-accent-gold text-navy-deep shadow-lg shadow-accent-gold/10"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Briefcase className="w-4 h-4" />
+              채용공고 관리
             </button>
 
             <button
@@ -1096,6 +1189,263 @@ export default function AdminDashboard() {
                           >
                             <Trash2 className="w-3.5 h-3.5" /> 삭제하기
                           </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* TABS: CAREERS */}
+            {activeTab === "careers" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-extrabold tracking-wide">채용공고 관리</h2>
+                    <p className="text-xs text-white/50">채용공고 정보를 CRUD 관리하며, 각 섹션별 리스트는 한 줄에 하나씩 입력하십시오.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditingCareer(null);
+                      setCareerForm({
+                        title: "",
+                        postedDate: new Date().toISOString().split("T")[0].replace(/-/g, "."),
+                        status: "active",
+                        description: "",
+                        requirements: "",
+                        preferred: "",
+                        conditions: "",
+                        process: "",
+                        submission: "",
+                        notes: "",
+                        contactEmail: ""
+                      });
+                      setIsAddingCareer(true);
+                    }}
+                    className="bg-accent-gold text-navy-deep px-4 py-2.5 rounded text-xs font-bold hover:bg-accent-gold-dark transition-all flex items-center gap-1.5 cursor-pointer shadow-lg shadow-accent-gold/10"
+                  >
+                    <Plus className="w-4 h-4" /> 공고 추가
+                  </button>
+                </div>
+
+                {isAddingCareer ? (
+                  <form onSubmit={handleCareerSubmit} className="bg-navy-light/40 border border-white/10 p-6 rounded-lg space-y-6">
+                    <h3 className="text-sm font-bold border-b border-white/10 pb-2 text-accent-gold">
+                      {editingCareer ? "채용공고 수정" : "신규 채용공고 등록"}
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">공고 제목</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. [채용공고] 기관전용 PE 사모집합투자기구 운용전문인력 채용"
+                          value={careerForm.title}
+                          onChange={(e) => setCareerForm({ ...careerForm, title: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">게시일</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. 2026.07.07"
+                          value={careerForm.postedDate}
+                          onChange={(e) => setCareerForm({ ...careerForm, postedDate: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">모집 상태</label>
+                        <select
+                          value={careerForm.status}
+                          onChange={(e) => setCareerForm({ ...careerForm, status: e.target.value as "active" | "closed" })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        >
+                          <option value="active">Active (모집 중)</option>
+                          <option value="closed">Closed (마감 완료)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">회사 및 모집 개요 (Description)</label>
+                      <textarea
+                        required
+                        rows={3}
+                        placeholder="회사 소개 및 모집 인트로를 작성해주세요."
+                        value={careerForm.description}
+                        onChange={(e) => setCareerForm({ ...careerForm, description: e.target.value })}
+                        className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none resize-none"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          1. 모집 부문 및 자격 요건 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={6}
+                          placeholder="채용 직무: ...&#10;담당 업무:&#10;- 업무내용 1&#10;- 업무내용 2&#10;자격 요건:&#10;- 자격 1"
+                          value={careerForm.requirements}
+                          onChange={(e) => setCareerForm({ ...careerForm, requirements: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          2. 우대 사항 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={6}
+                          placeholder="우대 조건 1&#10;우대 조건 2"
+                          value={careerForm.preferred}
+                          onChange={(e) => setCareerForm({ ...careerForm, preferred: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          3. 근무 조건 및 처우 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="근무 형태: 정규직&#10;급여 조건: 연봉 5,000만 원 이상"
+                          value={careerForm.conditions}
+                          onChange={(e) => setCareerForm({ ...careerForm, conditions: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          4. 전형 절차 및 일정 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="전형 절차: 서류 ➡️ 면접 ➡️ 합격&#10;접수 기간: 채용 시까지"
+                          value={careerForm.process}
+                          onChange={(e) => setCareerForm({ ...careerForm, process: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          5. 제출 서류 및 접수 방법 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="제출 서류: 이력서&#10;담당자: 김경준&#10;접수 방법: 이메일 접수"
+                          value={careerForm.submission}
+                          onChange={(e) => setCareerForm({ ...careerForm, submission: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">
+                          안내 사항 (한 줄에 하나씩)
+                        </label>
+                        <textarea
+                          required
+                          rows={4}
+                          placeholder="제출된 서류는 비밀 보장...&#10;허위 기재 시 취소..."
+                          value={careerForm.notes}
+                          onChange={(e) => setCareerForm({ ...careerForm, notes: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="space-y-1 md:col-span-2">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">접수 담당자 이메일 (지원서 이메일 링크용)</label>
+                        <input
+                          type="email"
+                          required
+                          placeholder="thewillkim@naver.com"
+                          value={careerForm.contactEmail}
+                          onChange={(e) => setCareerForm({ ...careerForm, contactEmail: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddingCareer(false)}
+                        className="px-4 py-2 border border-white/20 rounded text-xs text-white/60 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                      >
+                        취소
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-accent-gold text-navy-deep rounded text-xs font-bold hover:bg-accent-gold-dark transition-all cursor-pointer"
+                      >
+                        {editingCareer ? "저장하기" : "등록하기"}
+                      </button>
+                    </div>
+                  </form>
+                ) : null}
+
+                {/* Careers List Card Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {careers.length === 0 ? (
+                    <div className="col-span-full border border-white/10 rounded-lg p-12 text-center text-xs text-white/30 space-y-2">
+                      <Briefcase className="w-12 h-12 mx-auto text-white/10" />
+                      <div>등록된 채용공고가 존재하지 않습니다.</div>
+                    </div>
+                  ) : (
+                    careers.map((item) => (
+                      <div key={item.id} className="bg-navy-light/20 border border-white/10 rounded-lg p-5 flex flex-col justify-between hover:border-accent-gold/40 transition-colors">
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-start">
+                            <span className={`text-[9px] font-bold px-2 py-0.5 rounded ${
+                              item.status === "active" ? "bg-emerald-500/15 text-emerald-400" : "bg-rose-500/15 text-rose-400"
+                            }`}>
+                              {item.status === "active" ? "모집중" : "마감완료"}
+                            </span>
+                            <span className="text-[10px] text-white/40 font-mono">{item.postedDate}</span>
+                          </div>
+
+                          <div>
+                            <h4 className="text-sm font-bold text-white line-clamp-2 leading-snug">{item.title}</h4>
+                            <p className="text-[11px] text-white/50 mt-2 line-clamp-3 leading-relaxed font-light">{item.description}</p>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-white/5 mt-5 pt-3 flex justify-between items-center text-[10px] text-white/40">
+                          <div>
+                            지원메일: <span className="text-white/70 font-semibold">{item.contactEmail}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleEditCareer(item)}
+                              className="p-1 text-white/40 hover:text-accent-gold transition-colors cursor-pointer"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => item.id && handleDeleteCareer(item.id)}
+                              className="p-1 text-white/40 hover:text-rose-500 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))

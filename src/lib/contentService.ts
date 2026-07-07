@@ -62,7 +62,22 @@ export interface InquiryItem {
   upload_path?: string;
   created_at?: { seconds: number; nanoseconds: number } | null;
   type: "general" | "deal";
+}
 
+export interface CareerItem {
+  id?: string;
+  title: string;
+  postedDate: string;
+  status: "active" | "closed";
+  description: string;
+  requirements: string;
+  preferred: string;
+  conditions: string;
+  process: string;
+  submission: string;
+  notes: string;
+  contactEmail: string;
+  createdAt?: string;
 }
 
 // --- DEFAULT DATA FOR SEEDING / FALLBACKS ---
@@ -170,6 +185,22 @@ export const defaultNews: NewsItem[] = [
   }
 ];
 
+export const defaultCareers: CareerItem[] = [
+  {
+    title: "[채용공고] 기관전용 PE 사모집합투자기구 운용전문인력 채용",
+    postedDate: "2026.07.07",
+    status: "active",
+    description: "당사는 새롭게 첫걸음을 내딛는 기관전용 사모펀드(PE) 운용사로서, 당사와 함께 처음부터 회사를 빌드업하며 열정적이고 주도적으로 성장해 나갈 핵심 인재를 모집합니다.\n초기 멤버로서 펀드 설립부터 회사 운영 전반을 꼼꼼하고 책임감 있게 이끌어갈 분들의 많은 지원을 바랍니다.",
+    requirements: "채용 직무: 사모집합투자기구 운용전문인력 (일반운용전문인력 자격 필수)\n담당 업무:\n- 기관전용 사모펀드(PEF) 설립 및 관리 업무\n- 펀드 운용 지원 및 청산 관련 제반 업무\n- 회사 운영 및 경영 관리 지원 업무\n자격 요건:\n- 금융투자협회 '사모집합투자기구 운용전문인력' 자격증 보유자 (필수)\n- 연령 제한 없음\n- 신설 법인의 초기 세팅과 성장에 열정을 가지고 임하실 분",
+    preferred: "여성 금융인 커리어 개발 및 장기 근무 희망자 우대\n영어 및 외국어 능통자 (글로벌 업무 가능자)\n생성형 AI 툴(ChatGPT, 업무 자동화 등) 및 IT 디바이스 활용 능숙자",
+    conditions: "근무 형태: 정규직 (조정 가능)\n급여 조건: 연봉 5,000만 원 이상 (경력과 역량에 따라 면접 후 적극 협의 가능)",
+    process: "전형 절차: 서류 전형 ➡️ 면접 전형 (인터뷰) ➡️ 최종 합격\n접수 기간: 채용 공고일로부터 최소 10일간 모집 (적격자 채용 시 마감)\n면접 일정: 서류 합격자에 한해 개별 전화 연락을 통해 인터뷰 일시를 조정 및 확정합니다.",
+    submission: "제출 서류: 이력서, 자기소개서, 관련 자격증 사본\n담당자: 김경준\n접수 방법: 이메일 접수 (thewillkim@naver.com)",
+    notes: "제출하신 서류는 채용 목적 이외에는 사용되지 않으며, 개인정보 비밀이 보장됩니다.\n서류 허위 기재 시 채용이 취소될 수 있습니다.",
+    contactEmail: "thewillkim@naver.com"
+  }
+];
+
 // Checking if Firestore configuration exists helper
 const hasFirebaseKey = () => typeof window !== "undefined" && !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
@@ -192,6 +223,11 @@ export async function seedInitialData() {
     for (const news of defaultNews) {
       const docRef = doc(collection(db, "news"));
       await setDoc(docRef, { ...news, id: docRef.id });
+    }
+    // 4. Seed careers
+    for (const career of defaultCareers) {
+      const docRef = doc(collection(db, "careers"));
+      await setDoc(docRef, { ...career, id: docRef.id });
     }
     return true;
   } catch (error) {
@@ -385,6 +421,62 @@ export async function deleteInquiry(id: string, type: "general" | "deal"): Promi
     return true;
   } catch (e) {
     console.error(`Error deleting inquiry ${id} of type ${type}:`, e);
+    return false;
+  }
+}
+
+// 6. Careers API
+export async function getCareers(): Promise<CareerItem[]> {
+  if (!hasFirebaseKey()) return defaultCareers;
+  try {
+    const querySnapshot = await getDocs(collection(db, "careers"));
+    if (querySnapshot.empty) {
+      return defaultCareers;
+    }
+    const items: CareerItem[] = [];
+    querySnapshot.forEach((doc) => {
+      items.push({ ...doc.data(), id: doc.id } as CareerItem);
+    });
+    return items;
+  } catch (e) {
+    console.error("Error fetching careers from firestore:", e);
+    return defaultCareers;
+  }
+}
+
+export async function addCareerItem(item: Omit<CareerItem, "id">): Promise<string | null> {
+  if (!hasFirebaseKey()) return null;
+  try {
+    const docRef = await addDoc(collection(db, "careers"), {
+      ...item,
+      createdAt: new Date().toISOString()
+    });
+    await updateDoc(docRef, { id: docRef.id });
+    return docRef.id;
+  } catch (e) {
+    console.error("Error adding career item:", e);
+    return null;
+  }
+}
+
+export async function updateCareerItem(id: string, item: Partial<CareerItem>): Promise<boolean> {
+  if (!hasFirebaseKey()) return false;
+  try {
+    await updateDoc(doc(db, "careers", id), item);
+    return true;
+  } catch (e) {
+    console.error("Error updating career item:", e);
+    return false;
+  }
+}
+
+export async function deleteCareerItem(id: string): Promise<boolean> {
+  if (!hasFirebaseKey()) return false;
+  try {
+    await deleteDoc(doc(db, "careers", id));
+    return true;
+  } catch (e) {
+    console.error("Error deleting career item:", e);
     return false;
   }
 }
