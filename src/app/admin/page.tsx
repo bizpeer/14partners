@@ -477,7 +477,7 @@ export default function AdminDashboard() {
               <input
                 type="email"
                 required
-                placeholder="willkim@gmail.com"
+                placeholder="이메일 주소"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-navy-deep/80 border border-white/10 rounded px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-accent-gold focus:outline-none"
