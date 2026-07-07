@@ -134,7 +134,9 @@ export default function AdminDashboard() {
     category_en: "",
     title_ko: "",
     title_en: "",
-    date: ""
+    date: "",
+    content_ko: "",
+    content_en: ""
   });
 
   // Check auth on mount
@@ -295,7 +297,9 @@ export default function AdminDashboard() {
       category_en: item.category_en,
       title_ko: item.title_ko,
       title_en: item.title_en,
-      date: item.date
+      date: item.date,
+      content_ko: item.content_ko || "",
+      content_en: item.content_en || ""
     });
     setIsAddingNews(true);
   };
@@ -950,7 +954,9 @@ export default function AdminDashboard() {
                         category_en: "",
                         title_ko: "",
                         title_en: "",
-                        date: new Date().toISOString().split("T")[0].replace(/-/g, ".")
+                        date: new Date().toISOString().split("T")[0].replace(/-/g, "."),
+                        content_ko: "",
+                        content_en: ""
                       });
                       setIsAddingNews(true);
                     }}
@@ -1021,6 +1027,29 @@ export default function AdminDashboard() {
                           value={newsForm.title_en}
                           onChange={(e) => setNewsForm({ ...newsForm, title_en: e.target.value })}
                           className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">내용 (국문)</label>
+                        <textarea
+                          rows={4}
+                          placeholder="국문 뉴스 상세 내용을 입력하십시오."
+                          value={newsForm.content_ko}
+                          onChange={(e) => setNewsForm({ ...newsForm, content_ko: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none resize-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] uppercase font-bold tracking-wider text-white/50">내용 (영문)</label>
+                        <textarea
+                          rows={4}
+                          placeholder="영문 뉴스 상세 내용을 입력하십시오."
+                          value={newsForm.content_en}
+                          onChange={(e) => setNewsForm({ ...newsForm, content_en: e.target.value })}
+                          className="w-full bg-navy-deep border border-white/10 rounded px-3 py-2 text-xs text-white focus:border-accent-gold focus:outline-none resize-none"
                         />
                       </div>
                     </div>

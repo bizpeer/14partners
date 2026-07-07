@@ -36,6 +36,8 @@ export interface NewsItem {
   title_ko: string;
   title_en: string;
   date: string;
+  content_ko?: string;
+  content_en?: string;
 }
 
 export interface MetricItem {
@@ -180,21 +182,27 @@ export const defaultNews: NewsItem[] = [
     category_en: "Trends",
     title_ko: "2026년 한국 중견기업 구조화 신용 투자 기회",
     title_en: "Korean Mid-Market Structured Credit Opportunities in 2026",
-    date: "2026.05.15"
+    date: "2026.05.15",
+    content_ko: "2026년 한국 중견기업 시장에서는 전통적 은행 대출 외에 구조화 신용 투자가 새로운 대안 금융 솔루션으로 부상하고 있습니다. 특히 메자닌 구조와 하이브리드 대출을 활용하여 자본비용을 최적화하고 지분 희석을 최소화하려는 수요가 강하게 지속되고 있습니다.",
+    content_en: "In 2026, structured credit is emerging as a strong alternative financing solution for Korean mid-market enterprises. The demand for hybrid debt structures and mezzanine investments remains high, offering optimized cost of capital and minimal equity dilution."
   },
   {
     category_ko: "뉴스룸",
     category_en: "News",
     title_ko: "원데이즈PE, 바이오로직스 코리아 파이낸싱 라운드 성공적 마감",
     title_en: "Onedays PE successfully closes BioLogics Korea financing round",
-    date: "2025.11.20"
+    date: "2025.11.20",
+    content_ko: "원데이즈PE는 국내 대표 CDMO 바이오 기업인 바이오로직스 코리아의 생산 설비 증설 및 글로벌 시장 진출을 돕기 위해 총 3,500억 원 규모의 패키지 금융 솔루션을 조달하고 라운드를 마감했습니다.",
+    content_en: "Onedays PE has successfully closed a 350 billion KRW package financing round for BioLogics Korea, a leading domestic CDMO, to accelerate its facility expansion and global market outreach."
   },
   {
     category_ko: "시장 인사이트",
     category_en: "Market Insights",
     title_ko: "M&A 자문 동향: 하이브리드 부채 및 자기자본 구조",
     title_en: "M&A Advisory Trends: Hybrid Debt & Equity Capital Structures",
-    date: "2025.10.08"
+    date: "2025.10.08",
+    content_ko: "금리 변동성과 밸류에이션 갭이 심화되는 현재 M&A 시장에서 메자닌, 전환사채(CB), 신주인수권부사채(BW) 등 하이브리드 성격을 띠는 금융 자문이 거래 성사의 핵심 요소로 조명받고 있습니다.",
+    content_en: "Amid macro interest volatility and valuation gaps in the M&A market, hybrid financial advisory encompassing mezzanine, convertible bonds (CB), and bonds with warrants (BW) has become crucial in successfully closing mid-market transactions."
   }
 ];
 
