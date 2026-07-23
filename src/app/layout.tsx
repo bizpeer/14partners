@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     "구조화금융",
     "인수금융",
   ],
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
