@@ -59,9 +59,10 @@ export default function LPHome() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    { title: "Distribution Notice - EcoEnergy Group Realization", date: "2025.09.28", size: "1.2 MB" },
-    { title: "2025 14 Partners Annual ESG Integration Performance Report", date: "2025.06.30", size: "4.8 MB" }
-  ];
+    setEmail("");
+    setPassword("");
+    localStorage.removeItem("14partners_lp_session");
+  };
 
   return (
     <div className="bg-navy-deep min-h-[80vh] flex items-center justify-center py-20 px-6 relative overflow-hidden">
