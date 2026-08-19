@@ -126,16 +126,18 @@ export const Header: React.FC = () => {
 
                   {/* Dropdown Box */}
                   {activeDropdown === item.key && item.subItems && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-56 bg-navy-deep border border-accent-gold/20 rounded shadow-2xl overflow-hidden py-1 animate-fadeIn">
-                      {item.subItems.map((sub, index) => (
-                        <Link
-                          key={index}
-                          href={sub.href}
-                          className="block px-4 py-2.5 text-xs text-white/70 hover:text-navy-deep hover:bg-accent-gold transition-colors font-medium border-b border-white/5 last:border-0"
-                        >
-                          {sub.name}
-                        </Link>
-                      ))}
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-56 animate-fadeIn">
+                      <div className="bg-navy-deep border border-accent-gold/20 rounded shadow-2xl overflow-hidden py-1">
+                        {item.subItems.map((sub, index) => (
+                          <Link
+                            key={index}
+                            href={sub.href}
+                            className="block px-4 py-2.5 text-xs text-white/70 hover:text-navy-deep hover:bg-accent-gold transition-colors font-medium border-b border-white/5 last:border-0"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </>
