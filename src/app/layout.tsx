@@ -5,9 +5,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "원데이즈PE | Onedays Private Equity",
+  title: "포틴파트너스PE | 14 Partners Private Equity",
   description:
-    "Strategic Capital Partner for Mid-Market Opportunities. 사모펀드, 기업금융 및 구조화 자본 솔루션을 제공하는 원데이즈PE입니다.",
+    "Strategic Capital Partner for Mid-Market Opportunities. 사모펀드, 기업금융 및 구조화 자본 솔루션을 제공하는 14 Partners입니다.",
   keywords: [
     "Private Equity Korea",
     "Structured Finance Korea",

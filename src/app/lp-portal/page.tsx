@@ -13,13 +13,23 @@ export default function LPHome() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reports, setReports] = useState<{ title: string; date: string; size: string }[]>([]);
 
   useEffect(() => {
     setMounted(true);
     // 세션 유지 확인용 간단한 LocalStorage 조회
-    const session = localStorage.getItem("onedays_lp_session");
+    const session = localStorage.getItem("14partners_lp_session");
     if (session) {
       setIsLoggedIn(true);
+      // Simulate fetching reports
+      setTimeout(() => {
+        setReports([
+          { title: "2025 Q4 14 Partners Opportunity Fund I Quarterly Report", date: "2026.02.15", size: "2.4 MB" },
+          { title: "2025 Q3 14 Partners Opportunity Fund I Quarterly Report", date: "2025.11.15", size: "2.1 MB" },
+          { title: "2025 14 Partners Annual ESG Integration Performance Report", date: "2025.06.30", size: "4.8 MB" }
+        ]);
+        setLoading(false);
+      }, 800);
     }
   }, []);
 
@@ -30,11 +40,16 @@ export default function LPHome() {
     setError("");
     setLoading(true);
 
-    // 데모용 LP 자격증명: lp@onedayspe.com / onedays2026
+    // 데모용 LP 자격증명: lp@14partners.com / 14partners2026
     setTimeout(() => {
-      if (email === "lp@onedayspe.com" && password === "onedays2026") {
+      if (email === "lp@14partners.com" && password === "14partners2026") {
         setIsLoggedIn(true);
-        localStorage.setItem("onedays_lp_session", email);
+        localStorage.setItem("14partners_lp_session", email);
+        setReports([
+          { title: "2025 Q4 14 Partners Opportunity Fund I Quarterly Report", date: "2026.02.15", size: "2.4 MB" },
+          { title: "2025 Q3 14 Partners Opportunity Fund I Quarterly Report", date: "2025.11.15", size: "2.1 MB" },
+          { title: "2025 14 Partners Annual ESG Integration Performance Report", date: "2025.06.30", size: "4.8 MB" }
+        ]);
       } else {
         setError(t.lpPortal.error);
       }
@@ -44,15 +59,8 @@ export default function LPHome() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("onedays_lp_session");
-  };
-
-  const mockReports = [
-    { title: "2025 Q4 Onedays Opportunity Fund I Quarterly Report", date: "2026.02.15", size: "2.4 MB" },
-    { title: "Capital Call Notice - BioLogics Korea Co-Investment", date: "2025.11.02", size: "840 KB" },
-    { title: "2025 Q3 Onedays Opportunity Fund I Quarterly Report", date: "2025.11.15", size: "2.1 MB" },
     { title: "Distribution Notice - EcoEnergy Group Realization", date: "2025.09.28", size: "1.2 MB" },
-    { title: "2025 Onedays PE Annual ESG Integration Performance Report", date: "2025.06.30", size: "4.8 MB" }
+    { title: "2025 14 Partners Annual ESG Integration Performance Report", date: "2025.06.30", size: "4.8 MB" }
   ];
 
   return (
@@ -89,7 +97,7 @@ export default function LPHome() {
                 <input
                   type="email"
                   required
-                  placeholder="lp@onedayspe.com"
+                  placeholder="lp@14partners.com"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full bg-navy-deep/80 border border-white/10 rounded px-4 py-2.5 text-xs text-white placeholder-white/30 focus:border-accent-gold focus:outline-none"
@@ -136,7 +144,7 @@ export default function LPHome() {
             </form>
 
             <div className="text-center text-[10px] text-white/30 border-t border-white/5 pt-4">
-              Demo Credentials: <span className="font-semibold text-accent-gold">lp@onedayspe.com</span> / <span className="font-semibold text-accent-gold">onedays2026</span>
+              Demo Credentials: <span className="font-semibold text-accent-gold">lp@14partners.com</span> / <span className="font-semibold text-accent-gold">14partners2026</span>
             </div>
           </motion.div>
         ) : (
@@ -156,7 +164,7 @@ export default function LPHome() {
                   Limited Partner Secure Room
                 </h1>
                 <p className="text-xs text-white/60">
-                  lp@onedayspe.com {t.lpPortal.welcome}
+                  lp@14partners.com {t.lpPortal.welcome}
                 </p>
               </div>
 

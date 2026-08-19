@@ -94,9 +94,7 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl font-extrabold tracking-wider text-white group-hover:text-accent-gold transition-colors">
-            ONEDAYS<span className="text-accent-gold font-normal"> PE</span>
-          </span>
+          <img src="/logo.png" alt="14 Partners" className="h-8 w-auto object-contain" />
           <span className="hidden md:inline-block h-4 w-[1px] bg-white/20 mx-2"></span>
           <span className="hidden md:inline-block text-[10px] tracking-widest text-white/50 uppercase font-medium">
             Structured Capital

@@ -13,9 +13,7 @@ export const Footer: React.FC = () => {
         {/* Brand Info */}
         <div className="space-y-4 md:col-span-2">
           <Link href="/" className="inline-block">
-            <span className="text-2xl font-black tracking-wider text-white">
-              ONEDAYS<span className="text-accent-gold font-normal"> PE</span>
-            </span>
+            <img src="/logo.png" alt="14 Partners" className="h-8 w-auto object-contain" />
           </Link>
           <p className="text-xs max-w-sm leading-relaxed text-white/50">
             {t.footer.disclaimer}

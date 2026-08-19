@@ -38,7 +38,7 @@ export default function About() {
         <div className="space-y-6 text-sm text-navy-deep/80 leading-relaxed font-light">
           <p>
             {language === "en"
-              ? "Onedays PE is an institutional private equity firm specializing in mid-market opportunities, structured capital solutions, and merchant banking. We combine the disciplined investing of private equity with the strategic agility of corporate finance advisory."
+              ? "14 Partners is an institutional private equity firm specializing in mid-market opportunities, structured capital solutions, and merchant banking. We combine the disciplined investing of private equity with the strategic agility of corporate finance advisory."
               : "원데이즈PE는 중견·중소기업 성장 및 구조화 자본 솔루션, 머천트 뱅킹 자문에 특화된 글로벌 사모투자 전문 회사입니다. 당사는 사모펀드의 철저한 투자 원칙과 기업금융 자문의 전략적 기민함을 결합하여 차별화된 가치를 창출합니다."}
           </p>
           <p>
@@ -76,7 +76,7 @@ export default function About() {
         <div className="space-y-6 text-sm text-navy-deep/80 leading-relaxed font-light">
           <p>
             {language === "en"
-              ? "With offices and strategic affiliates in Seoul, Singapore, and New York, Onedays PE leverages a global network of financial institutions, industry experts, and co-investment partners to facilitate cross-border transactions."
+              ? "With offices and strategic affiliates in Seoul, Singapore, and New York, 14 Partners leverages a global network of financial institutions, industry experts, and co-investment partners to facilitate cross-border transactions."
               : "서울, 싱가포르, 뉴욕의 글로벌 거점을 바탕으로 다국적 금융기관, 산업 전문가 네트워크, 공동 투자 파트너들과 긴밀히 공조하고 있습니다. 이를 통해 국경을 넘나드는 크로스보더(Cross-border) 자문 및 투자 집행을 기민하게 추진합니다."}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default function About() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
           <span className="text-[10px] font-bold uppercase tracking-widest text-accent-gold">
-            ABOUT ONEDAYS PE
+            ABOUT 14 PARTNERS
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-navy-deep">
             {language === "en" ? "Firm Overview & Mission" : "회사 소개 및 미션"}

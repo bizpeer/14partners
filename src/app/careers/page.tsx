@@ -150,7 +150,7 @@ export default function CareersPage() {
           </div>
 
           <div className="text-[10px] text-white/40 border-t border-white/5 pt-2">
-            ONEDAYS PRIVATE EQUITY RECRUITING
+            14 PARTNERS PRIVATE EQUITY RECRUITING
           </div>
         </div>
       )
@@ -179,7 +179,7 @@ export default function CareersPage() {
           </div>
 
           <div className="text-[10px] text-white/40">
-            ONEDAYS PRIVATE EQUITY RECRUITING
+            14 PARTNERS PRIVATE EQUITY RECRUITING
           </div>
         </div>
       )
@@ -210,7 +210,7 @@ export default function CareersPage() {
           </div>
 
           <div className="text-[10px] text-white/40">
-            ONEDAYS PRIVATE EQUITY RECRUITING
+            14 PARTNERS PRIVATE EQUITY RECRUITING
           </div>
         </div>
       )
@@ -258,7 +258,7 @@ export default function CareersPage() {
           </div>
 
           <div className="text-[10px] text-white/40">
-            ONEDAYS PRIVATE EQUITY RECRUITING
+            14 PARTNERS PRIVATE EQUITY RECRUITING
           </div>
         </div>
       )
@@ -313,7 +313,7 @@ export default function CareersPage() {
           </div>
 
           <div className="text-[10px] text-white/40">
-            ONEDAYS PRIVATE EQUITY RECRUITING
+            14 PARTNERS PRIVATE EQUITY RECRUITING
           </div>
         </div>
       )

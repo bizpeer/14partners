@@ -189,11 +189,11 @@ export const defaultNews: NewsItem[] = [
   {
     category_ko: "뉴스룸",
     category_en: "News",
-    title_ko: "원데이즈PE, 바이오로직스 코리아 파이낸싱 라운드 성공적 마감",
-    title_en: "Onedays PE successfully closes BioLogics Korea financing round",
+    title_ko: "14 Partners, 바이오로직스 코리아 파이낸싱 라운드 성공적 마감",
+    title_en: "14 Partners successfully closes BioLogics Korea financing round",
     date: "2025.11.20",
-    content_ko: "원데이즈PE는 국내 대표 CDMO 바이오 기업인 바이오로직스 코리아의 생산 설비 증설 및 글로벌 시장 진출을 돕기 위해 총 3,500억 원 규모의 패키지 금융 솔루션을 조달하고 라운드를 마감했습니다.",
-    content_en: "Onedays PE has successfully closed a 350 billion KRW package financing round for BioLogics Korea, a leading domestic CDMO, to accelerate its facility expansion and global market outreach."
+    content_ko: "14 Partners는 국내 대표 CDMO 바이오 기업인 바이오로직스 코리아의 생산 설비 증설 및 글로벌 시장 진출을 돕기 위해 총 3,500억 원 규모의 패키지 금융 솔루션을 조달하고 라운드를 마감했습니다.",
+    content_en: "14 Partners has successfully closed a 350 billion KRW package financing round for BioLogics Korea, a leading domestic CDMO, to accelerate its facility expansion and global market outreach."
   },
   {
     category_ko: "시장 인사이트",

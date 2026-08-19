@@ -81,7 +81,7 @@ export const dictionaries = {
     },
     strategySection: {
       title: "투자 분야 및 전략",
-      subtitle: "원데이즈PE는 차별화된 하이브리드 전략을 통해 최적의 금융 솔루션을 제공합니다.",
+      subtitle: "14 Partners는 차별화된 하이브리드 전략을 통해 최적의 금융 솔루션을 제공합니다.",
       buyoutDesc: "경영권 인수를 통해 기업 체질 개선과 가치 제고를 이끌어냅니다.",
       growthDesc: "성장 잠재력이 높은 유망 기업에 자본과 파트너십을 지원합니다.",
       creditDesc: "안정적 현금 흐름을 기반으로 한 구조화 신용 및 메자닌 투자를 집행합니다.",
@@ -107,14 +107,14 @@ export const dictionaries = {
       btn: "협력 의뢰하기",
     },
     footer: {
-      address: "서울특별시 강남구 테헤란로 123, 원데이즈 빌딩 15층",
+      address: "서울특별시 강남구 테헤란로 123, 15층",
       phone: "전화: 02-1234-5678 | 팩스: 02-1234-5679",
-      copyright: "© 2026 Onedays PE. All rights reserved.",
+      copyright: "© 2026 14 Partners. All rights reserved.",
       disclaimer: "본 웹사이트는 기관 투자자 및 적격 투자자를 위한 정보를 담고 있으며, 일반 대중에 대한 투자 권유를 목적으로 하지 않습니다.",
     },
     lpPortal: {
       title: "LP 포탈 (Limited Partner Portal)",
-      desc: "원데이즈PE 기관 투자자 전용 보안 데이터룸",
+      desc: "14 Partners 기관 투자자 전용 보안 데이터룸",
       email: "이메일 주소",
       password: "비밀번호",
       login: "로그인",
@@ -228,7 +228,7 @@ export const dictionaries = {
     },
     strategySection: {
       title: "Investment Verticals & Strategy",
-      subtitle: "Onedays PE delivers customized financial solutions through a differentiated hybrid strategy.",
+      subtitle: "14 Partners delivers customized financial solutions through a differentiated hybrid strategy.",
       buyoutDesc: "Drive corporate transformation and value creation through control investments.",
       growthDesc: "Provide strategic capital and operational support to high-growth enterprises.",
       creditDesc: "Deploy structured credit and mezzanine financing based on robust cash flows.",
@@ -254,14 +254,14 @@ export const dictionaries = {
       btn: "Discuss Opportunity",
     },
     footer: {
-      address: "15th Floor, Onedays Building, 123 Teheran-ro, Gangnam-gu, Seoul, Korea",
+      address: "15th Floor, 123 Teheran-ro, Gangnam-gu, Seoul, Korea",
       phone: "Tel: +82-2-1234-5678 | Fax: +82-2-1234-5679",
-      copyright: "© 2026 Onedays PE. All rights reserved.",
+      copyright: "© 2026 14 Partners. All rights reserved.",
       disclaimer: "This website is intended for institutional and qualified investors and does not constitute a general solicitation for investment.",
     },
     lpPortal: {
       title: "LP Portal (Limited Partner Portal)",
-      desc: "Secure document room for Onedays PE Institutional Investors",
+      desc: "Secure document room for 14 Partners Institutional Investors",
       email: "Email Address",
       password: "Password",
       login: "Login",
