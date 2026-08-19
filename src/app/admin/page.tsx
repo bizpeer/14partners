@@ -465,7 +465,7 @@ export default function AdminDashboard() {
               <Lock className="w-6 h-6 text-accent-gold" />
             </div>
             <h1 className="text-2xl font-bold text-white tracking-wide">관리자 포털</h1>
-            <p className="text-xs text-white/50">원데이즈PE 시스템 관리를 위해 로그인이 필요합니다.</p>
+            <p className="text-xs text-white/50">포틴파트너스PE 시스템 관리를 위해 로그인이 필요합니다.</p>
           </div>
 
           {loginError && (

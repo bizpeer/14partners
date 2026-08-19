@@ -74,7 +74,7 @@ export default function CareersPage() {
           <Info className="w-12 h-12 text-accent-gold mx-auto opacity-75" />
           <h2 className="text-xl font-bold text-white">현재 진행 중인 채용공고가 없습니다.</h2>
           <p className="text-xs text-white/50 leading-relaxed">
-            원데이즈PE에 관심을 가져주셔서 감사합니다. 새로운 인재 영입 공고가 등록되면 이곳에 업데이트됩니다.
+            포틴파트너스PE에 관심을 가져주셔서 감사합니다. 새로운 인재 영입 공고가 등록되면 이곳에 업데이트됩니다.
           </p>
         </div>
       </div>
@@ -288,7 +288,7 @@ export default function CareersPage() {
 
               <div className="pt-2">
                 <a
-                  href={`mailto:${activeJob.contactEmail}?subject=${encodeURIComponent(`[원데이즈PE 지원] 성명 - 사모펀드 운용전문인력`)}`}
+                  href={`mailto:${activeJob.contactEmail}?subject=${encodeURIComponent(`[포틴파트너스PE 지원] 성명 - 사모펀드 운용전문인력`)}`}
                   className="w-full flex items-center justify-center gap-2 bg-accent-gold hover:bg-accent-gold-dark text-navy-deep font-extrabold text-xs py-2.5 rounded transition-all duration-300 shadow-md shadow-accent-gold/10"
                 >
                   <Mail className="w-4 h-4" />
@@ -362,7 +362,7 @@ export default function CareersPage() {
           <span className="text-[10px] font-bold uppercase tracking-widest text-accent-gold">CAREERS</span>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight gold-gradient-text uppercase">인재 영입</h1>
           <p className="text-xs text-white/50 max-w-lg mx-auto font-light leading-relaxed">
-            원데이즈PE와 함께 투자 생태계를 빌드업하며 장기적으로 성장해 나갈 핵심 파트너를 모집합니다.
+            포틴파트너스PE와 함께 투자 생태계를 빌드업하며 장기적으로 성장해 나갈 핵심 파트너를 모집합니다.
           </p>
 
           {/* Multilingual Warning guidance if language is EN */}

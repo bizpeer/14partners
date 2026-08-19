@@ -110,7 +110,7 @@ export default function InsightsPage() {
           <span className="text-[10px] font-bold uppercase tracking-widest text-accent-gold">INSIGHTS & NEWS</span>
           <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight gold-gradient-text uppercase">뉴스 & 인사이트</h1>
           <p className="text-xs text-white/50 max-w-lg mx-auto font-light leading-relaxed">
-            원데이즈PE가 제공하는 최신 사모펀드 동향, 미디어 릴리즈 및 시장 인사이트를 전해드립니다.
+            포틴파트너스PE가 제공하는 최신 사모펀드 동향, 미디어 릴리즈 및 시장 인사이트를 전해드립니다.
           </p>
         </div>
 

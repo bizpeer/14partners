@@ -39,7 +39,7 @@ export default function About() {
           <p>
             {language === "en"
               ? "14 Partners is an institutional private equity firm specializing in mid-market opportunities, structured capital solutions, and merchant banking. We combine the disciplined investing of private equity with the strategic agility of corporate finance advisory."
-              : "원데이즈PE는 중견·중소기업 성장 및 구조화 자본 솔루션, 머천트 뱅킹 자문에 특화된 글로벌 사모투자 전문 회사입니다. 당사는 사모펀드의 철저한 투자 원칙과 기업금융 자문의 전략적 기민함을 결합하여 차별화된 가치를 창출합니다."}
+              : "포틴파트너스PE는 중견·중소기업 성장 및 구조화 자본 솔루션, 머천트 뱅킹 자문에 특화된 글로벌 사모투자 전문 회사입니다. 당사는 사모펀드의 철저한 투자 원칙과 기업금융 자문의 전략적 기민함을 결합하여 차별화된 가치를 창출합니다."}
           </p>
           <p>
             {language === "en"
@@ -58,7 +58,7 @@ export default function About() {
           <p>
             {language === "en"
               ? "We maintain the highest standards of regulatory compliance, fiduciary responsibility, and transparency. Our internal risk management committee independently evaluates all investments to protect our LP partners."
-              : "원데이즈PE는 업계 최고 수준의 거버넌스와 컴플라이언스 기준을 준수합니다. 독립적인 리스크 관리 위원회와 내부 통제 시스템을 통해 엄격하게 리스크를 분별하며, 출자자(LP)의 자산을 철저히 보호합니다."}
+              : "포틴파트너스PE는 업계 최고 수준의 거버넌스와 컴플라이언스 기준을 준수합니다. 독립적인 리스크 관리 위원회와 내부 통제 시스템을 통해 엄격하게 리스크를 분별하며, 출자자(LP)의 자산을 철저히 보호합니다."}
           </p>
           <p>
             {language === "en"

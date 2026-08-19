@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Acquisition Financing",
     "Corporate Finance Advisory",
     "Mid-Market Investment",
-    "원데이즈PE",
+    "포틴파트너스PE",
     "사모펀드",
     "구조화금융",
     "인수금융",
