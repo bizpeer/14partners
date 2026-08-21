@@ -68,8 +68,8 @@ export const dictionaries = {
       nda: "NDA 요청",
     },
     hero: {
-      headline: "중견·중소기업 성장 기회를 위한 전략적 자본 파트너",
-      subheadline: "사모펀드(PE), 기업금융 및 구조화 자본 솔루션",
+      headline: "구조화금융, 인수금융, 메자닌, 성장자본 및 M&A 자문에 특화된 투자회사입니다.\n엄격한 검토와 정교한 금융구조를 통해 우수한 투자기회를 발굴하고 장기적인 가치를 창출합니다.",
+      subheadline: "기회를 발굴하고, 자본을 설계하며, 가치를 창출합니다.",
       ctaSubmit: "투자 제안 제출",
       ctaContact: "투자팀 문의",
     },
@@ -215,8 +215,8 @@ export const dictionaries = {
       nda: "NDA Request",
     },
     hero: {
-      headline: "Strategic Capital Partner for Mid-Market Opportunities",
-      subheadline: "Private Equity, Corporate Finance & Structured Capital Solutions",
+      headline: "Fourteen Partners is a private investment firm specializing in structured finance, acquisition financing, mezzanine investments, growth capital, and M&A advisory.\nWe identify high-quality investment opportunities, conduct rigorous due diligence, and design tailored financial structures to create sustainable long-term value.",
+      subheadline: "Identifying opportunities, structuring capital, and creating value.",
       ctaSubmit: "Submit Opportunity",
       ctaContact: "Contact Investment Team",
     },

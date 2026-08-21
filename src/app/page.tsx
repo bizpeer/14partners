@@ -173,7 +173,11 @@ export default function Home() {
                 {/* Headline */}
                 <motion.h1
                   variants={itemVariants}
-                  className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-white"
+                  className={`font-extrabold tracking-tight text-white whitespace-pre-line ${
+                    language === "en"
+                      ? "text-2xl md:text-3xl lg:text-4xl leading-[1.3]"
+                      : "text-3xl md:text-4xl lg:text-5xl leading-[1.3]"
+                  }`}
                 >
                   {t.hero.headline}
                 </motion.h1>
@@ -215,7 +219,7 @@ export default function Home() {
               >
                 <iframe
                   className="w-full h-full border-0"
-                  src="https://www.youtube.com/embed/1jwyOicGYlk?autoplay=1&mute=1&loop=1&playlist=1jwyOicGYlk&controls=1&rel=0&modestbranding=1"
+                  src="https://www.youtube.com/embed/xnDRIVl3Zj0?autoplay=1&mute=1&loop=1&playlist=xnDRIVl3Zj0&controls=1&rel=0&modestbranding=1"
                   allow="autoplay; encrypted-media; picture-in-picture"
                   allowFullScreen
                 />
