@@ -175,8 +175,8 @@ export default function Home() {
                   variants={itemVariants}
                   className={`font-extrabold tracking-tight text-white whitespace-pre-line ${
                     language === "en"
-                      ? "text-2xl md:text-3xl lg:text-4xl leading-[1.3]"
-                      : "text-3xl md:text-4xl lg:text-5xl leading-[1.3]"
+                      ? "text-xl md:text-2xl lg:text-3xl leading-[1.3]"
+                      : "text-2xl md:text-3xl lg:text-4xl leading-[1.3]"
                   }`}
                 >
                   {t.hero.headline}
